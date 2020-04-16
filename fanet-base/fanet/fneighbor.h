@@ -34,7 +34,7 @@ private:
 
 public:
 	const FanetMacAddr addr;
-	char name[10] = {'\0'};
+	char name[16] = {'\0'};
 
 	/* 2D/3D position/tracking */
 	const Coordinate3D &pos;

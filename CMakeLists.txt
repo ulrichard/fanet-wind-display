@@ -21,20 +21,6 @@ ENDIF()
 
 ADD_DEFINITIONS(-std=c++14)
 
-generate_arduino_library(Adafruit_GFX
-    BOARD ${AVR_DEVICE}
-	SRCS  Adafruit-GFX-Library/Adafruit_GFX.cpp
-	HDRS  Adafruit-GFX-Library/Adafruit_GFX.h
-)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/Adafruit-GFX-Library)
-
-generate_arduino_library(Adafruit_SSD1306
-    BOARD ${AVR_DEVICE}
-	SRCS  Adafruit_SSD1306/Adafruit_SSD1306.cpp
-	HDRS  Adafruit_SSD1306/Adafruit_SSD1306.h
-)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/Adafruit_SSD1306)
-
 generate_arduino_library(fanet-base
     BOARD ${AVR_DEVICE}
 	SRCS  
@@ -63,8 +49,6 @@ generate_arduino_firmware(fanet_wind_display
     BOARD ${AVR_DEVICE}
     SKETCH ../fanet-wind-display
 	LIBS
-		Adafruit_GFX
-		Adafruit_SSD1306
 		fanet-base
 	PROGRAMMER stk500v2
     PORT  ${AVRDUDE_PORT}

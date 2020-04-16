@@ -1,37 +1,32 @@
+#include "nokia3310lcd.h"
 // Skytraxx fanet
 #include <fframe.h>
 #include <fneighbor.h>
 #include <frame/fname.h>
 #include <frame/fservice.h>
-// Adafruit display
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
-// Arduino
-#include <Wire.h>
 
-const uint8_t I2C_ADDRESS_DISPLAY = 0x3C;
-const uint8_t OLED_RESET = 7;
 
-Adafruit_SSD1306 display(OLED_RESET);
+Nokia3310LCD  disp(9, 8, 7);
 String inputString = "";
 bool stringComplete = false;
 
-// devices that we want to receive
+// FANET devices that we want to receive
 FanetNeighbor weatherUrmi(FanetMacAddr(0x01, 0x110));
-//FanetNeighbor richiSktr30(FanetMacAddr(0x11, 0xD46));
+FanetNeighbor richiSktr30(FanetMacAddr(0x11, 0xD46));
 
 // example strings:    src_manufacturer, src_id, broadcast (0/1), signature, type, length, payload 
 const String exampleWeatherN = "#FNF 1,110,1,0,2,C,55726D696265726748616E67";
 const String exampleWeatherW = "#FNF 1,110,1,0,4,B,265BDA42B61B06A9000004";
-//const String exampleST30     = "#FNF 11,D46,1,0,2,E,5269636861726420556C72696368";
+const String exampleST30     = "#FNF 11,D46,1,0,2,E,5269636861726420556C72696368";
 
 
 
 void setup()
 {
     Serial.begin(115200);
-    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-    inputString.reserve(200);
+    disp.init();
+    disp.LcdContrast(0x40);
+    inputString.reserve(60);
     delay(500);
     
     Serial.println("#DGP 1"); // power up the device
@@ -47,8 +42,8 @@ FanetNeighbor* FindNeighbor(const FanetMacAddr& addr)
 {
     if(addr == weatherUrmi.addr)
         return &weatherUrmi;
-//    else if(addr == richiSktr30.addr)
-//        return &richiSktr30;
+    else if(addr == richiSktr30.addr)
+        return &richiSktr30;
     else
         return nullptr;
 }
@@ -120,63 +115,59 @@ bool Decode(const String& input)
 
 void DisplayInfos()
 {
-    display.clearDisplay();
-    display.setTextColor(WHITE);
-    display.setCursor(0, 0);
+    char tmp[10];
 
-    display.setTextSize(2);
-    display.println(weatherUrmi.name);
+    disp.LcdClear();
+    disp.LcdGotoXYFont(1, 1);
+    disp.LcdStr(Nokia3310LCD::FONT_1X, weatherUrmi.name);
 
-    display.setTextSize(2);
+    disp.LcdGotoXYFont(1, 2);
     const auto speed = static_cast<uint16_t>(weatherUrmi.speed_kmh * 10.0f);
-    display.print(speed / 10, DEC);
-    display.print(".");
-    display.print(speed % 10, DEC);
-    display.println(" kmh");
+    snprintf(tmp, 10, "%d.%d kmh", speed / 10, speed % 10);
+    disp.LcdStr(Nokia3310LCD::FONT_1X, tmp);
 
-    display.setTextSize(2);
+    disp.LcdGotoXYFont(1, 3);
     const uint16_t direction = weatherUrmi.heading_rad * RAD_TO_DEG;
-    display.print(direction, DEC);
-    display.print(" ");
-  
-/*  
-    if(direction < 13)
-        display.println("N");
-    else if(direction < 35)
-        display.println("NNW");
-    else if(direction < 57)
-        display.println("NW");
-    else if(direction < 80)
-        display.println("WNW");
-    else if(direction < 102)
-        display.println("W");
-    else if(direction < 125)
-        display.println("WSW");
-    else if(direction < 147)
-        display.println("SW");
-    else if(direction < 170)
-        display.println("SSW");
-    else if(direction < 192)
-        display.println("S");
-    else if(direction < 215)
-        display.println("SSE");
-    else if(direction < 237)
-        display.println("SE");
-    else if(direction < 260)
-        display.println("ESE");
-    else if(direction < 282)
-        display.println("E");
-    else if(direction < 305)
-        display.println("ENE");
-    else if(direction < 327)
-        display.println("NE");
-    else if(direction < 350)
-        display.println("NNE");
-    else
-        display.println("N");
-*/
+    snprintf(tmp, 10, "%d grad", direction);
+    disp.LcdStr(Nokia3310LCD::FONT_1X, tmp);
 
-    display.display();
+    disp.LcdGotoXYFont(10, 3);
+    if(direction < 13)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "N");
+    else if(direction < 35)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "NNW");
+    else if(direction < 57)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "NW");
+    else if(direction < 80)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "WNW");
+    else if(direction < 102)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "W");
+    else if(direction < 125)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "WSW");
+    else if(direction < 147)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "SW");
+    else if(direction < 170)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "SSW");
+    else if(direction < 192)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "S");
+    else if(direction < 215)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "SSE");
+    else if(direction < 237)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "SE");
+    else if(direction < 260)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "ESE");
+    else if(direction < 282)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "E");
+    else if(direction < 305)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "ENE");
+    else if(direction < 327)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "NE");
+    else if(direction < 350)
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "NNE");
+    else
+        disp.LcdStr(Nokia3310LCD::FONT_1X, "N");
+
+    disp.LcdUpdate();
 }
 
 void loop()
