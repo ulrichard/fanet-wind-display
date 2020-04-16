@@ -1,7 +1,5 @@
 # FANET
 Flying Ad-hoc Network
 
-Base station interface
+Receives the signal of a specified weather station, and displays the values on a simple dot matrix display.
 
-# IDE
-Use SW4STM32
