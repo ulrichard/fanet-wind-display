@@ -10,7 +10,7 @@ PROJECT(FanetWindDisplay)
 SET(AVR_DEVICE     atmega328)
 SET(AVRDUDE_DEVICE atmega328p)
 
-SET(IS_SOLDERED False)
+SET(IS_SOLDERED True)
 IF(${IS_SOLDERED})
     SET(AVRDUDE_PORT   /dev/ttyACM0)   # diamex AVR von www.reichelt.de
     SET(AVRDUDE_PROGRAMMER   stk500v2) # diamex AVR von www.reichelt.de

@@ -5,7 +5,7 @@
 #include <frame/fname.h>
 #include <frame/fservice.h>
 
-
+const int ledPin = 4;
 Nokia3310LCD  disp(9, 8, 7);
 String inputString = "";
 bool stringComplete = false;
@@ -23,6 +23,9 @@ const String exampleST30     = "#FNF 11,D46,1,0,2,E,5269636861726420556C72696368
 
 void setup()
 {
+    pinMode(ledPin, OUTPUT);
+    digitalWrite(ledPin, HIGH);
+   
     Serial.begin(115200);
     disp.init();
     disp.LcdContrast(0x40);
@@ -36,6 +39,8 @@ void setup()
     Decode(exampleWeatherW);
     Decode(exampleWeatherN);
     DisplayInfos();
+    
+    digitalWrite(ledPin, LOW);
 }
 
 FanetNeighbor* FindNeighbor(const FanetMacAddr& addr)
