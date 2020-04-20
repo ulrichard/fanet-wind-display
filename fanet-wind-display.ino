@@ -13,6 +13,7 @@ bool stringComplete = false;
 // FANET devices that we want to receive
 FanetNeighbor weatherUrmi(FanetMacAddr(0x01, 0x110));
 FanetNeighbor richiSktr30(FanetMacAddr(0x11, 0xD46));
+FanetNeighbor richiBeacon(FanetMacAddr(0x11, 0x7CF));
 
 // example strings:    src_manufacturer, src_id, broadcast (0/1), signature, type, length, payload 
 const String exampleWeatherN = "#FNF 1,110,1,0,2,C,55726D696265726748616E67";
@@ -29,6 +30,10 @@ void setup()
     Serial.begin(115200);
     disp.init();
     disp.LcdContrast(0x40);
+    disp.LcdGotoXYFont(1, 1);
+    disp.LcdStr(Nokia3310LCD::FONT_1X, "Bitte warten");
+    disp.LcdUpdate();
+
     inputString.reserve(60);
     delay(500);
     
@@ -49,6 +54,8 @@ FanetNeighbor* FindNeighbor(const FanetMacAddr& addr)
         return &weatherUrmi;
     else if(addr == richiSktr30.addr)
         return &richiSktr30;
+    else if(addr == richiBeacon.addr)
+        return &richiBeacon;
     else
         return nullptr;
 }

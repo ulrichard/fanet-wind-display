@@ -1,6 +1,6 @@
-SET(atmega328.build.f_cpu 16000000) # running on external 8MHz crystal
+SET(atmega328.build.f_cpu 16000000) # running on external 16MHz crystal
 
-set(CMAKE_TOOLCHAIN_FILE ../GpsClock/arduino-cmake/cmake/ArduinoToolchain.cmake)
+set(CMAKE_TOOLCHAIN_FILE arduino-cmake/cmake/ArduinoToolchain.cmake)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT(FanetWindDisplay)
